@@ -34,4 +34,4 @@ You can use tools like curl, Postman, or a web browser to test the endpoint. For
 
 Upload an invoice:
 ```bash
-curl -X POST -F "file=@invoices_sample/invoice_Aaron_Bergman_36259.pdf" http://localhost:8080/extract 
+curl -X POST -F "file=@invoices_sample/invoice_Aaron_Bergman_36259.pdf" http://localhost:8080/extract main change
