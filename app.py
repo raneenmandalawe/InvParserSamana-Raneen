@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 import oci
 import base64
+import time
 from db_util import init_db, save_inv_extraction, get_invoice_by_id, get_invoices_by_vendor
 
 app = FastAPI()
@@ -34,7 +35,9 @@ async def extract(file: UploadFile = File(...)):
     )
     
     try:
+        start_time = time.time()
         response = doc_client.analyze_document(request)
+        prediction_time = time.time() - start_time
     except Exception as e:
         return JSONResponse(
             status_code=503,
@@ -82,10 +85,12 @@ async def extract(file: UploadFile = File(...)):
 
     # Create result
     result = {
-        "confidence": invoice_confidence,
-        "data": data,
-        "dataConfidence": data_confidence
-    }
+    "confidence": invoice_confidence,
+    "data": data,
+    "dataConfidence": data_confidence,
+    "predictionTime": prediction_time
+}
+
     # ============ END OF YOUR CODE ============
     
     # Check confidence
@@ -137,4 +142,3 @@ if __name__ == "__main__":
 
 
     #test Git
-    
