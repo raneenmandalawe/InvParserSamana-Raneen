@@ -4,3 +4,17 @@ oci
 python-multipart
 pytest
 httpx
+
+# Testing dependencies
+# Core dependencies (you already have these)
+fastapi
+uvicorn[standard]
+python-multipart
+oci
+
+# Testing dependencies (add these)
+pytest==7.4.3
+pytest-cov==4.1.0
+pytest-html==4.1.1
+httpx==0.25.2
+coverage==7.3.2
