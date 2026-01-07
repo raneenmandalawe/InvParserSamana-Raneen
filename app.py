@@ -100,7 +100,7 @@ async def extract(file: UploadFile = File(...)):
     try:
         save_inv_extraction(result)
         print("DEBUG app.py: save_inv_extraction returned successfully!")
-    except Exception as e: # pragma: no cover
+    except Exception as e:
         print(f"DEBUG app.py ERROR: Failed to save - {e}")
         import traceback
         traceback.print_exc()
@@ -129,7 +129,7 @@ async def get_invoices_by_vendor_endpoint(vendor_name: str):
     }
 
 
-if __name__ == "__main__": # pragma: no cover
+if __name__ == "__main__":
     import uvicorn
     init_db()
     uvicorn.run(app, host="0.0.0.0", port=8080)
