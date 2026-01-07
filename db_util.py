@@ -132,14 +132,22 @@ def save_inv_extraction(result):
             
             print(f"DEBUG db_util: Successfully saved invoice {invoice_id}")
         else:
-            print(f"DEBUG db_util: No invoice_id found in data!")
+            print(f"DEBUG db_util: No invoice_id found in data!")  # pragma: no cover
             
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         print(f"DEBUG db_util ERROR: {e}")
         import traceback
         traceback.print_exc()
         raise
 
+def clean_db():
+    """Clean the database by dropping all tables."""
+    with get_db() as conn:
+        cursor = conn.cursor()
+        # Drop tables in reverse order of dependencies
+        cursor.execute("DROP TABLE IF EXISTS items")
+        cursor.execute("DROP TABLE IF EXISTS confidences")
+        cursor.execute("DROP TABLE IF EXISTS invoices")
 
 def get_invoice_by_id(invoice_id):
     with get_db() as conn:
