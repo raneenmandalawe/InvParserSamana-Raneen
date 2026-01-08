@@ -40,4 +40,6 @@ Thumbs.db
 *.log
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
-
+echo "coverage.xml" >> .gitignore
+echo "htmlcov/" >> .gitignore
+echo ".coverage" >> .gitignore
