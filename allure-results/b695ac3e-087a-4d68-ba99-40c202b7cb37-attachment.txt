@@ -1,0 +1,14 @@
+DEBUG db_util: invoice_id = INV-V-1
+DEBUG db_util: invoice_id type = <class 'str'>
+DEBUG db_util: Invoice inserted
+DEBUG db_util: Confidences inserted
+DEBUG db_util: Number of items to insert: 0
+DEBUG db_util: Items inserted
+DEBUG db_util: Successfully saved invoice INV-V-1
+DEBUG db_util: invoice_id = INV-V-2
+DEBUG db_util: invoice_id type = <class 'str'>
+DEBUG db_util: Invoice inserted
+DEBUG db_util: Confidences inserted
+DEBUG db_util: Number of items to insert: 0
+DEBUG db_util: Items inserted
+DEBUG db_util: Successfully saved invoice INV-V-2
