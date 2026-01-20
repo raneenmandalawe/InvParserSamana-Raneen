@@ -1,9 +1,12 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Depends
 from fastapi.responses import JSONResponse
+from sqlalchemy.orm import Session
 import base64
 import oci
 
-from db_util import init_db, save_inv_extraction, get_invoice_by_id, get_invoices_by_vendor
+from db import init_db, get_db
+from controllers import InvoiceController
+from views import InvoiceView
 
 app = FastAPI()
 
@@ -13,7 +16,7 @@ doc_client = oci.ai_document.AIServiceDocumentClient(config)
 
 
 @app.post("/extract")
-async def extract(file: UploadFile = File(...)):
+async def extract(file: UploadFile = File(...), db: Session = Depends(get_db)):
     pdf_bytes = await file.read()
 
     # Base64 encode PDF
@@ -94,7 +97,7 @@ async def extract(file: UploadFile = File(...)):
 
     # Save to database (do not fail the endpoint if DB save fails)
     try:
-        save_inv_extraction(result)
+        InvoiceController.create(db, data, data_confidence)
     except Exception:
         pass
 
@@ -102,17 +105,26 @@ async def extract(file: UploadFile = File(...)):
 
 
 @app.get("/invoice/{invoice_id}")
-async def get_invoice(invoice_id: str):
-    invoice = get_invoice_by_id(invoice_id)
+async def get_invoice(invoice_id: str, db: Session = Depends(get_db)):
+    # Controller: Retrieve invoice from database
+    invoice = InvoiceController.get_by_id(db, invoice_id)
+    
     if not invoice:
         return JSONResponse(status_code=404, content={"error": "Invoice not found"})
-    return invoice
-
-
+    
+    # View: Format invoice for response
+    return InvoiceView.format_invoice(invoice)
+# Controller: Retrieve invoices from database
+    invoices = InvoiceController.get_by_vendor(db, vendor_name)
+    
+    # View: Format response
+    return InvoiceView.format_vendor_response(vendor_name, invoices)
 @app.get("/invoices/vendor/{vendor_name}")
-async def get_invoices_by_vendor_endpoint(vendor_name: str):
-    invoices = get_invoices_by_vendor(vendor_name)
-    return {"VendorName": vendor_name, "TotalInvoices": len(invoices), "invoices": invoices}
+async def get_invoices_by_vendor_endpoint(vendor_name: str, db: Session = Depends(get_db)):
+    # Controller: Get invoices for vendor
+    invoices = InvoiceController.get_by_vendor(db, vendor_name)
+    # View: Format response
+    return InvoiceView.format_vendor_response(vendor_name, invoices)
 
 
 if __name__ == "__main__":  # pragma: no cover
