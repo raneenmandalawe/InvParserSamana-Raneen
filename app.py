@@ -114,15 +114,13 @@ async def get_invoice(invoice_id: str, db: Session = Depends(get_db)):
     
     # View: Format invoice for response
     return InvoiceView.format_invoice(invoice)
-# Controller: Retrieve invoices from database
+
+
+@app.get("/invoices/vendor/{vendor_name}")
+async def get_invoices_by_vendor(vendor_name: str, db: Session = Depends(get_db)):
+    # Controller: Retrieve invoices from database
     invoices = InvoiceController.get_by_vendor(db, vendor_name)
     
-    # View: Format response
-    return InvoiceView.format_vendor_response(vendor_name, invoices)
-@app.get("/invoices/vendor/{vendor_name}")
-async def get_invoices_by_vendor_endpoint(vendor_name: str, db: Session = Depends(get_db)):
-    # Controller: Get invoices for vendor
-    invoices = InvoiceController.get_by_vendor(db, vendor_name)
     # View: Format response
     return InvoiceView.format_vendor_response(vendor_name, invoices)
 
